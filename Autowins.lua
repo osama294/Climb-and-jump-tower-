@@ -1,11 +1,13 @@
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
-local hrp = character:WaitForChild("HumanoidRootPart")
+local humanoid = character:WaitForChild("Humanoid")
 
-hrp.CFrame = hrp.CFrame + Vector3.new(0, 14000, 0)
+-- تعديل السرعة إلى 20,000,000,000
+humanoid.WalkSpeed = 20000000000
 
+-- تنبيه
 game.StarterGui:SetCore("SendNotification", {
-    Title = "تم التليبورت!";
-    Text = "وصلت إلى ارتفاع 14,000 متر 🚀";
+    Title = "السرعة مفعلة!",
+    Text = "تم تعيين سرعة اللاعب إلى 20 مليار 🚀",
     Duration = 5;
 })
