@@ -1,64 +1,54 @@
--- إعدادات اللاعب
 local player = game.Players.LocalPlayer
 local character = player.Character or player.CharacterAdded:Wait()
 local hrp = character:WaitForChild("HumanoidRootPart")
 
--- واجهة GUI
-local ScreenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-local button = Instance.new("TextButton", ScreenGui)
+-- واجهة الزر
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "ClimbButtonGui"
 
-ScreenGui.Name = "ClimbLoopGUI"
-button.Size = UDim2.new(0, 200, 0, 50)
-button.Position = UDim2.new(0.5, -100, 0.8, 0)
-button.Text = "🚀 بدء الصعود 10 مرات"
-button.BackgroundColor3 = Color3.fromRGB(60, 180, 75)
-button.TextColor3 = Color3.new(1, 1, 1)
+local button = Instance.new("TextButton", gui)
+button.Size = UDim2.new(0, 220, 0, 50)
+button.Position = UDim2.new(0.5, -110, 0.85, 0)
+button.Text = "🚀 ابدأ الصعود بسرعة"
 button.TextScaled = true
+button.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
+button.TextColor3 = Color3.new(1, 1, 1)
 button.Font = Enum.Font.SourceSansBold
 button.BorderSizePixel = 0
-button.Visible = true
 
--- المنطق الرئيسي
-local runService = game:GetService("RunService")
+-- إعدادات الصعود
+local targetHeight = 14299000 -- 14,299 كم
+local climbSpeed = 500000000 -- 500 مليون
 local climbing = false
-local climbCount = 0
-local maxClimbs = 10
-local isFalling = false
 
-local function climb()
-    if hrp then
-        hrp.CFrame = hrp.CFrame + Vector3.new(0, 10000, 0)
-        isFalling = true
-    end
-end
+-- وظيفة الصعود
+local function startClimb()
+    if climbing then return end
+    climbing = true
+    button.Text = "⬆️ جاري الصعود..."
 
--- التحقق من الهبوط
-local function monitorFall()
-    runService.Heartbeat:Connect(function()
-        if climbing and isFalling and hrp.Velocity.Y == 0 then
-            isFalling = false
-            climbCount += 1
-            if climbCount < maxClimbs then
-                wait(1)
-                climb()
-            else
-                climbing = false
-                button.Text = "✅ انتهى الصعود"
-                button.BackgroundColor3 = Color3.fromRGB(0, 128, 255)
-            end
+    local runService = game:GetService("RunService")
+
+    local connection
+    connection = runService.RenderStepped:Connect(function()
+        if not climbing then
+            connection:Disconnect()
+            return
         end
+
+        local currentY = hrp.Position.Y
+        if currentY >= targetHeight then
+            climbing = false
+            button.Text = "✅ وصلت للقمة"
+            button.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
+            connection:Disconnect()
+            return
+        end
+
+        -- الصعود التدريجي السريع
+        hrp.CFrame = hrp.CFrame + Vector3.new(0, climbSpeed, 0)
     end)
 end
 
--- عند الضغط على الزر
-button.MouseButton1Click:Connect(function()
-    if not climbing then
-        climbCount = 0
-        climbing = true
-        button.Text = "⏳ جاري التنفيذ..."
-        button.BackgroundColor3 = Color3.fromRGB(255, 165, 0)
-        wait(1)
-        climb()
-        monitorFall()
-    end
-end)
+-- الضغط على الزر
+button.MouseButton1Click:Connect(startClimb)
