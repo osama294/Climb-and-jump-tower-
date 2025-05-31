@@ -1,13 +1,25 @@
-local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
-local humanoid = character:WaitForChild("Humanoid")
+local Players = game:GetService("Players")
 
--- تعديل السرعة إلى 20,000,000,000
-humanoid.WalkSpeed = 20000000000
+Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function(character)
+        -- تأخير بسيط لضمان تحميل الشخصية بالكامل
+        wait(1)
 
--- تنبيه
-game.StarterGui:SetCore("SendNotification", {
-    Title = "السرعة مفعلة!",
-    Text = "تم تعيين سرعة اللاعب إلى 20 مليار 🚀",
-    Duration = 5;
-})
+        -- إنشاء قيمة ClimbSpeed إذا لم تكن موجودة
+        local climbSpeed = character:FindFirstChild("ClimbSpeed")
+        if not climbSpeed then
+            climbSpeed = Instance.new("NumberValue")
+            climbSpeed.Name = "ClimbSpeed"
+            climbSpeed.Parent = character
+        end
+
+        climbSpeed.Value = 10000000000 -- 10 مليار
+
+        -- تنبيه اللاعب
+        game.StarterGui:SetCore("SendNotification", {
+            Title = "🧗‍♂️ سرعة تسلق مفعلة!",
+            Text = "تم تعيين Climb Speed إلى 10B تلقائيًا.",
+            Duration = 4
+        })
+    end)
+end)
