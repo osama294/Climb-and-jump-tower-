@@ -18,7 +18,7 @@ button.BorderSizePixel = 0
 
 -- إعدادات الصعود
 local targetHeight = 14299000 -- 14,299 كم
-local climbSpeed = 3000 -- سرعة الصعود: 3K
+local climbSpeed = 1000 -- سرعة الصعود: 1K
 local climbing = false
 
 -- وظيفة الصعود
@@ -37,7 +37,8 @@ local function startClimb()
         end
 
         local currentY = hrp.Position.Y
-        if currentY >= targetHeight then
+        if currentY + climbSpeed >= targetHeight then
+            hrp.CFrame = CFrame.new(hrp.Position.X, targetHeight, hrp.Position.Z)
             climbing = false
             button.Text = "✅ وصلت للقمة"
             button.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
