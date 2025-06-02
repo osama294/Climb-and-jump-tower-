@@ -9,7 +9,7 @@ gui.Name = "ClimbButtonGui"
 local startButton = Instance.new("TextButton", gui)
 startButton.Size = UDim2.new(0, 150, 0, 50)
 startButton.Position = UDim2.new(0.4, -75, 0.85, 0)
-startButton.Text = "🚀 ابدأ الصعود"
+startButton.Text = "🚀 تسلق برج خليفة"
 startButton.TextScaled = true
 startButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
 startButton.TextColor3 = Color3.new(1, 1, 1)
@@ -27,7 +27,8 @@ stopButton.TextColor3 = Color3.new(1, 1, 1)
 stopButton.Font = Enum.Font.SourceSansBold
 stopButton.BorderSizePixel = 0
 
-local targetHeight = 14299000 -- 14,299 كم
+-- ارتفاع برج خليفة (بروبلوكسياً)
+local targetHeight = 8280
 local climbing = false
 
 local runService = game:GetService("RunService")
@@ -36,7 +37,7 @@ local connection
 local function startClimb()
     if climbing then return end
     climbing = true
-    startButton.Text = "⬆️ جاري الصعود..."
+    startButton.Text = "⬆️ جاري تسلق برج خليفة..."
     stopButton.Text = "⏹️ إيقاف الصعود"
 
     connection = runService.RenderStepped:Connect(function()
@@ -49,13 +50,17 @@ local function startClimb()
         if pos.Y >= targetHeight then
             hrp.CFrame = CFrame.new(pos.X, targetHeight, pos.Z)
             climbing = false
-            startButton.Text = "✅ وصلت للقمة"
+            startButton.Text = "🏁 وصلت لقمة برج خليفة!"
             startButton.BackgroundColor3 = Color3.fromRGB(0, 200, 100)
+
+            -- مثال على مكافأة (إذا كان لديك سيرفر يتعامل معها)
+            -- game.ReplicatedStorage:WaitForChild("GiveReward"):FireServer("BurjKhalifa")
+
             connection:Disconnect()
             return
         end
 
-        -- تحريك تدريجي للأعلى بسرعة 10 وحدات لكل إطار
+        -- تحريك تدريجي للأعلى
         hrp.CFrame = hrp.CFrame + Vector3.new(0, 10, 0)
     end)
 end
@@ -63,7 +68,7 @@ end
 local function stopClimb()
     if not climbing then return end
     climbing = false
-    startButton.Text = "🚀 ابدأ الصعود"
+    startButton.Text = "🚀 تسلق برج خليفة"
     startButton.BackgroundColor3 = Color3.fromRGB(0, 170, 255)
     stopButton.Text = "⏹️ إيقاف الصعود"
 end
